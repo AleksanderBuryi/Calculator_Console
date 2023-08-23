@@ -1,7 +1,8 @@
-public class Main {
+import entity.Application;
 
-    public static void main(String[] args) {
-        System.out.println("Bad version without OOP -> badVersion_NoOOP branch");
-        System.out.println("Simon's version with additions -> Simon'sVersionRewritten branch");
+public class Main {
+    public static void main(String[] args){
+        Application application = new Application();
+        application.start();
     }
 }
