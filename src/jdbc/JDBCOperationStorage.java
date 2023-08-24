@@ -14,9 +14,8 @@ public class JDBCOperationStorage implements OperationStorage {
 
     private final Connection connection;
     public JDBCOperationStorage() {
-        JDBCPostgresConfig conn = new JDBCPostgresConfig();
         try {
-            connection = conn.getConnection();
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

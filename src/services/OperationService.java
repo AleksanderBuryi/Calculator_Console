@@ -1,6 +1,9 @@
 package services;
 
+import consoleMethods.InMemoryOperationStorage;
 import entity.Operation;
+import fileMethods.FileOperationStorage;
+import fileMethods.JsonOperationStorage;
 import interfaces.OperationStorage;
 import jdbc.JDBCOperationStorage;
 
@@ -13,9 +16,9 @@ import java.util.List;
 public class OperationService {
 
 //    private final OperationStorage storage = new FileOperationStorage();
-//    private final OperationStorage storage = new InMemoryOperationStorage();
+    private final OperationStorage storage = new InMemoryOperationStorage();
 //    private final OperationStorage storage = new JsonOperationStorage();
-    private final OperationStorage storage = new JDBCOperationStorage();
+//    private final OperationStorage storage = new JDBCOperationStorage();
 
     public Operation calculate(Operation operation) {
         switch (operation.getOperator()) {
