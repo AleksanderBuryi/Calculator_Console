@@ -16,8 +16,8 @@ import java.util.List;
 public class OperationService {
 
 //    private final OperationStorage storage = new FileOperationStorage();
-    private final OperationStorage storage = new InMemoryOperationStorage();
-//    private final OperationStorage storage = new JsonOperationStorage();
+//    private final OperationStorage storage = new InMemoryOperationStorage();
+    private final OperationStorage storage = new JsonOperationStorage();
 //    private final OperationStorage storage = new JDBCOperationStorage();
 
     public Operation calculate(Operation operation) {
