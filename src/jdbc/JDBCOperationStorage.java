@@ -12,19 +12,12 @@ import java.util.List;
 
 public class JDBCOperationStorage implements OperationStorage {
 
-    private final Connection connection;
-    public JDBCOperationStorage() {
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void save(Operation operation) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into postgres.public.operations values (?, ?, ?, ?, ?)");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into operations values (?, ?, ?, ?, ?)");
             preparedStatement.setDouble(1, operation.getNum1());
             preparedStatement.setDouble(2, operation.getNum2());
             preparedStatement.setString(3, operation.getOperator());
@@ -42,8 +35,9 @@ public class JDBCOperationStorage implements OperationStorage {
     public List<Operation> findAll() {
         List<Operation> allOperations = new ArrayList<>();
 
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from postgres.public.operations");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("select * from operations");
 
             while (resultSet.next()) {
                 double num1 = resultSet.getDouble(1);

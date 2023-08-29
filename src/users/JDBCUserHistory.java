@@ -11,19 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class JDBCUserHistory {
-    private final Connection connection;
-
-    public JDBCUserHistory() {
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void insertUserName(User user) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into postgres.public.users (user_name) values (?)");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into users (user_name) values (?)");
             preparedStatement.setString(1, user.getName());
             preparedStatement.execute();
             preparedStatement.close();
@@ -33,7 +25,8 @@ public class JDBCUserHistory {
     }
 
     public void setOperation(User user, Operation operation) {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into postgres.public.users " +
+        try(Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into users " +
                 "(user_name, num1, num2, operator, result, date) values (?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setDouble(2, operation.getNum1());
@@ -48,7 +41,8 @@ public class JDBCUserHistory {
     }
 
     public List<Operation> getAll(User user) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select num1, num2, operator, result, date from postgres.public.users where user_name = ? and num1 is not null")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+             PreparedStatement preparedStatement = connection.prepareStatement("select num1, num2, operator, result, date from users where user_name = ? and num1 is not null")) {
             preparedStatement.setString(1, user.getName());
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Operation> history = new ArrayList<>();
@@ -70,7 +64,8 @@ public class JDBCUserHistory {
     }
 
     public boolean checkUserByName(User user) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select distinct user_name from postgres.public.users")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin");
+             PreparedStatement preparedStatement = connection.prepareStatement("select distinct user_name from users")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 if (resultSet.getString("user_name").equals(user.getName()))
